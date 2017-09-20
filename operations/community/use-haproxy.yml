@@ -7,7 +7,7 @@
     url: https://bosh.io/d/github.com/cloudfoundry-incubator/haproxy-boshrelease?v=8.1.1
     sha1: 98ec4d0571b5fccb975eab3ed5e40842e35b8daa
 - type: replace
-  path: /instance_groups/name=smoke-tests
+  path: /instance_groups/-
   value:
     name: haproxy
     azs: [z1, z2]
