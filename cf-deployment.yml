@@ -1653,9 +1653,9 @@ releases:
   version: 1.6.0
   sha1: d919974f26a9892cac87ab221e045014f4bf460b
 - name: cf-smoke-tests
-  url: https://bosh.io/d/github.com/cloudfoundry/cf-smoke-tests-release?v=39
-  version: "39"
-  sha1: a2d557302a1026f685514b34792b81c0432a48c8
+  url: https://bosh.io/d/github.com/cloudfoundry/cf-smoke-tests-release?v=38
+  version: "38"
+  sha1: 141ef92c9b30ad91424de307e09b306818f6a89e
 - name: cflinuxfs2
   url: https://bosh.io/d/github.com/cloudfoundry/cflinuxfs2-release?v=1.154.0
   version: 1.154.0
