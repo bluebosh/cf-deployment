@@ -1,4 +1,8 @@
 ---
+
+- type: remove
+  path: /instance_groups/name=smoke-tests
+  
 - type: replace
   path: /releases/-
   value:
@@ -7,28 +11,24 @@
     url: https://bosh.io/d/github.com/cloudfoundry-incubator/haproxy-boshrelease?v=8.1.1
     sha1: 98ec4d0571b5fccb975eab3ed5e40842e35b8daa
 - type: replace
-  path: /instance_groups/name=smoke-tests
+  path: /instance_groups/-
   value:
     name: haproxy
-    azs: [z1, z2]
-    instances: 2
+    azs: [z1]
+    instances: 1
     stemcell: default
     vm_type: minimal
     networks: [name: default]
     jobs:
-    - name: keepalived
-      release: haproxy
-      properties:
-        keepalived:
-          vip: ((haproxy_static_vip))
     - name: haproxy
       release: haproxy
       properties:
         ha_proxy:
           ssl_pem: "((router_ssl.certificate))((router_ssl.private_key))"
           tcp_link_port: 2222
+          
 - type: replace
-  path: /instance_groups?/-
+  path: /instance_groups/-
   value:
     name: smoke-tests
     lifecycle: errand
