@@ -1,5 +1,5 @@
 - type: replace
-  path: /instance_groups/name=blobstore/jobs/name=blobstore/properties/blobstore/internal_access_rules?
+  path: /instance_groups/name=singleton-blobstore/jobs/name=blobstore/properties/blobstore/internal_access_rules?
   value:
     - "allow 10.0.0.0/8;"
     - "allow 172.16.0.0/12;"

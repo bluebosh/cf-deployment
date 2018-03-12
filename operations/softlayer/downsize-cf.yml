@@ -19,21 +19,6 @@
     - z1
 
 - type: replace
-  path: /instance_groups/name=etcd/instances?
-  value:
-    1
-
-- type: replace
-  path: /instance_groups/name=etcd/azs?
-  value:
-    - z1
-
-- type: replace
-  path: /instance_groups/name=etcd/jobs/name=etcd/properties/etcd/cluster/0/instances?
-  value:
-    1
-
-- type: replace
   path: /instance_groups/name=doppler/instances?
   value:
     1
@@ -64,12 +49,12 @@
     - z1
 
 - type: replace
-  path: /instance_groups/name=blobstore/instances?
+  path: /instance_groups/name=singleton-blobstore/instances?
   value:
     1
 
 - type: replace
-  path: /instance_groups/name=blobstore/azs?
+  path: /instance_groups/name=singleton-blobstore/azs?
   value:
     - z1
 
@@ -104,12 +89,12 @@
     - z1
 
 - type: replace
-  path: /instance_groups/name=diego-brain/instances?
+  path: /instance_groups/name=scheduler/instances?
   value:
     1
 
 - type: replace
-  path: /instance_groups/name=diego-brain/azs?
+  path: /instance_groups/name=scheduler/azs?
   value:
     - z1
 
@@ -124,31 +109,41 @@
     - z1
 
 - type: replace
-  path: /instance_groups/name=cc-clock/instances?
-  value:
-    1
-
-- type: replace
-  path: /instance_groups/name=cc-clock/azs?
-  value:
-    - z1
-
-- type: replace
-  path: /instance_groups/name=cc-bridge/instances?
-  value:
-    1
-
-- type: replace
-  path: /instance_groups/name=cc-bridge/azs?
-  value:
-    - z1
-
-- type: replace
   path: /instance_groups/name=log-api/instances?
   value:
     1
 
 - type: replace
   path: /instance_groups/name=log-api/azs?
+  value:
+    - z1
+
+- type: replace
+  path: /instance_groups/name=adapter/instances?
+  value:
+    1
+
+- type: replace
+  path: /instance_groups/name=adapter/azs?
+  value:
+    - z1
+
+- type: replace
+  path: /instance_groups/name=tcp-router/instances?
+  value:
+    1
+
+- type: replace
+  path: /instance_groups/name=tcp-router/azs?
+  value:
+    - z1
+
+- type: replace
+  path: /instance_groups/name=database/instances?
+  value:
+    1
+
+- type: replace
+  path: /instance_groups/name=database/azs?
   value:
     - z1
