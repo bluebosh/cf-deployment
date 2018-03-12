@@ -1,327 +1,327 @@
 - path: /releases/name=cf-mysql/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/cf-mysql-36-ubuntu-trusty-3445.7-20170901-001601-180327032.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/cf-mysql-36.11.0-ubuntu-trusty-3541.8-20180309-000929-121845839.tgz
 - path: /releases/name=cf-mysql/version
   type: replace
-  value: "36"
+  value: 36.11.0
 - path: /releases/name=cf-mysql/sha1
   type: replace
-  value: 534524f0c1e585944e4cbc90b685e410811c5563
+  value: cffb9257a293a6ab72eaf12eeed93659cf93b892
 - path: /releases/name=capi/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/capi-1.41.0-ubuntu-trusty-3445.7-20170901-230517-709636855.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/capi-1.50.0-ubuntu-trusty-3541.8-20180308-234252-510481273.tgz
 - path: /releases/name=capi/version
   type: replace
-  value: 1.41.0
+  value: 1.50.0
 - path: /releases/name=capi/sha1
   type: replace
-  value: 0c8ee17c1df8179d5d3d99621a3570e00d46307e
+  value: 3fc8fefd1a4d75d550085fc6e6cac9a530aaa55a
 - path: /releases/name=binary-buildpack/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/binary-buildpack-1.0.14-ubuntu-trusty-3445.7-20170831-234358-804656649.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/binary-buildpack-1.0.17-ubuntu-trusty-3541.8-20180308-233436-392955635.tgz
 - path: /releases/name=binary-buildpack/version
   type: replace
-  value: 1.0.14
+  value: 1.0.17
 - path: /releases/name=binary-buildpack/sha1
   type: replace
-  value: 389c520fc42bb2d4cb649e2f7b6d47048b9d336b
+  value: cc054426a4c9f7a84c8915aad02df844309fe82c
 - path: /releases/name=cf-networking/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/cf-networking-1.6.0-ubuntu-trusty-3445.7-20170831-234638-88927962.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/cf-networking-1.11.0-ubuntu-trusty-3541.8-20180308-233800-330593535.tgz
 - path: /releases/name=cf-networking/version
   type: replace
-  value: 1.6.0
+  value: 1.11.0
 - path: /releases/name=cf-networking/sha1
   type: replace
-  value: 847c79546d71fc4804f62ed53000f2a56c1923e7
+  value: 3db77611cdfac2b3b2e15feb47d923306826e71f
 - path: /releases/name=uaa/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/uaa-45-ubuntu-trusty-3445.7-20170831-234723-673820962.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/uaa-55-ubuntu-trusty-3541.8-20180308-233925-274331152.tgz
 - path: /releases/name=uaa/version
   type: replace
-  value: "45"
+  value: "55"
 - path: /releases/name=uaa/sha1
   type: replace
-  value: 9151e5766064e595a38c003530e3192e811e9da2
+  value: d737b4fe894ac8583060adba1d7e9061744dcb36
 - path: /releases/name=nats/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/nats-22-ubuntu-trusty-3445.7-20170831-234630-656044318.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/nats-23-ubuntu-trusty-3541.8-20180308-233625-651656534.tgz
 - path: /releases/name=nats/version
   type: replace
-  value: "22"
+  value: "23"
 - path: /releases/name=nats/sha1
   type: replace
-  value: 45c830148f14352024af807e352dae7dc1d2140e
-- path: /releases/name=etcd/url
-  type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/etcd-117-ubuntu-trusty-3445.7-20170831-234609-355518033.tgz
-- path: /releases/name=etcd/version
-  type: replace
-  value: "117"
-- path: /releases/name=etcd/sha1
-  type: replace
-  value: 2e4e5fb7ff1f53b63ef401dbbc3584f02a703388
+  value: b83275f3adaa926bc8b5031d543c9ede020e3fdd
 - path: /releases/name=diego/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/diego-1.25.3-ubuntu-trusty-3445.7-20170901-002818-691196484.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/diego-2.1.0-ubuntu-trusty-3541.8-20180308-233937-501347209.tgz
 - path: /releases/name=diego/version
   type: replace
-  value: 1.25.3
+  value: 2.1.0
 - path: /releases/name=diego/sha1
   type: replace
-  value: 41598d84b490abed46c56d7cfacad7a6a4e532fe
+  value: 248cb9a89d0da64c0d58e937f5fd6800624b609a
 - path: /releases/name=routing/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/routing-0.162.0-ubuntu-trusty-3445.7-20170831-234603-598723229.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/routing-0.172.0-ubuntu-trusty-3541.8-20180308-233750-059944764.tgz
 - path: /releases/name=routing/version
   type: replace
-  value: 0.162.0
+  value: 0.172.0
 - path: /releases/name=routing/sha1
   type: replace
-  value: b425857593c0024601ef4ae511d90ff5cf8eb97d
+  value: ae2852d6616207eb2a34d081651a74b5374d5744
 - path: /releases/name=consul/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/consul-173-ubuntu-trusty-3445.7-20170831-234534-319006346.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/consul-192-ubuntu-trusty-3541.8-20180308-233709-779967748.tgz
 - path: /releases/name=consul/version
   type: replace
-  value: "173"
+  value: "192"
 - path: /releases/name=consul/sha1
   type: replace
-  value: c8c1edcbc9a1e4524c50fc43f8536c5217be124f
+  value: 8742fd8a36bd0b2cf415ec4b75acbbdb17cdbf94
 - path: /releases/name=cflinuxfs2/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/cflinuxfs2-1.154.0-ubuntu-trusty-3445.7-20170906-044638-042048297.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/cflinuxfs2-1.189.0-ubuntu-trusty-3541.8-20180308-233534-840905464.tgz
 - path: /releases/name=cflinuxfs2/version
   type: replace
-  value: 1.154.0
+  value: 1.189.0
 - path: /releases/name=cflinuxfs2/sha1
   type: replace
-  value: 8d921e24aff47c7a2ed737be55bb260052728851
+  value: 7f4041774a13434d4345bc8ebb5f2b908cdc96e1
 - path: /releases/name=garden-runc/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/garden-runc-1.9.3-ubuntu-trusty-3445.7-20170831-234550-225222019.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/garden-runc-1.11.1-ubuntu-trusty-3541.8-20180308-234119-612895637.tgz
 - path: /releases/name=garden-runc/version
   type: replace
-  value: 1.9.3
+  value: 1.11.1
 - path: /releases/name=garden-runc/sha1
   type: replace
-  value: 1c89d0241100d5bf68cb5979b55e2936b27edf8f
+  value: 0f1362540ccaf7f5d88ca75c2d2fcb94364291a3
 - path: /releases/name=loggregator/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/loggregator-95-ubuntu-trusty-3445.7-20170905-160531-802861249.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/loggregator-102-ubuntu-trusty-3541.8-20180308-233738-690143922.tgz
 - path: /releases/name=loggregator/version
   type: replace
-  value: "95"
+  value: "102"
 - path: /releases/name=loggregator/sha1
   type: replace
-  value: 7293b850a7579adcc642ce19824cfc7e97e9903e
+  value: a300c0139c6bee55b272b77720d17ff1c32078cc
 - path: /releases/name=go-buildpack/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/go-buildpack-1.8.6-ubuntu-trusty-3445.7-20170831-234358-459171653.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/go-buildpack-1.8.19-ubuntu-trusty-3541.8-20180308-233424-631180239.tgz
 - path: /releases/name=go-buildpack/version
   type: replace
-  value: 1.8.6
+  value: 1.8.19
 - path: /releases/name=go-buildpack/sha1
   type: replace
-  value: 3d600410cbeb29721ac79b75e434e934575df27a
+  value: 6c9856a9fa1011dc2eeadf5266fad1059e2038e6
 - path: /releases/name=php-buildpack/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/php-buildpack-4.3.40-ubuntu-trusty-3445.7-20170831-234325-749006955.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/php-buildpack-4.3.49-ubuntu-trusty-3541.8-20180308-233424-984919832.tgz
 - path: /releases/name=php-buildpack/version
   type: replace
-  value: 4.3.40
+  value: 4.3.49
 - path: /releases/name=php-buildpack/sha1
   type: replace
-  value: b58a5ee03ae5e4eea981cfa002a526ca9ece5494
+  value: 875e95c31d26ec1068de7156126026ca28604962
 - path: /releases/name=cf-smoke-tests/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/cf-smoke-tests-39-ubuntu-trusty-3445.7-20170831-234417-737264356.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/cf-smoke-tests-40-ubuntu-trusty-3541.8-20180308-233620-762755322.tgz
 - path: /releases/name=cf-smoke-tests/version
   type: replace
-  value: "39"
+  value: "40"
 - path: /releases/name=cf-smoke-tests/sha1
   type: replace
-  value: 0825e703c301e3760815a600b63bf86e25bca18c
+  value: 569bc5e4cef0bf57c269af223febd568d979c6b2
 - path: /releases/name=java-buildpack/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/java-buildpack-4.5-ubuntu-trusty-3445.7-20170831-234354-273834087.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/java-buildpack-4.9-ubuntu-trusty-3541.8-20180308-233431-789732966.tgz
 - path: /releases/name=java-buildpack/version
   type: replace
-  value: "4.5"
+  value: "4.9"
 - path: /releases/name=java-buildpack/sha1
   type: replace
-  value: 7901b0119beb83364287d806b6d9738834cb5e6d
+  value: 6d66aa28424dbf9e6d2c3b4280b6e489fbe5a0d6
 - path: /releases/name=ruby-buildpack/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/ruby-buildpack-1.6.47-ubuntu-trusty-3445.7-20170831-234325-274366225.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/ruby-buildpack-1.7.13-ubuntu-trusty-3541.8-20180308-233433-458285433.tgz
 - path: /releases/name=ruby-buildpack/version
   type: replace
-  value: 1.6.47
+  value: 1.7.13
 - path: /releases/name=ruby-buildpack/sha1
   type: replace
-  value: 4bcd55fd6dee82d387ef43623c4f315dc5dd7354
+  value: a7ff95b1bbbd48ebc62dc843159d19e5a20b3cab
 - path: /releases/name=statsd-injector/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/statsd-injector-1.0.30-ubuntu-trusty-3445.7-20170831-234441-43288513.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/statsd-injector-1.2.0-ubuntu-trusty-3541.8-20180308-233638-202756739.tgz
 - path: /releases/name=statsd-injector/version
   type: replace
-  value: 1.0.30
+  value: 1.2.0
 - path: /releases/name=statsd-injector/sha1
   type: replace
-  value: bf342e5cc98b1b8a5085b0ca7cddb660ab48234c
+  value: a2a47bd7b6cec10ae32632c49a6efb45925588d9
 - path: /releases/name=nodejs-buildpack/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/nodejs-buildpack-1.6.6-ubuntu-trusty-3445.7-20170831-234326-270203682.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/nodejs-buildpack-1.6.18-ubuntu-trusty-3541.8-20180308-233519-056630791.tgz
 - path: /releases/name=nodejs-buildpack/version
   type: replace
-  value: 1.6.6
+  value: 1.6.18
 - path: /releases/name=nodejs-buildpack/sha1
   type: replace
-  value: fe45af2a1c8c16bf312ceb33e7c5a845281dbe9a
+  value: 16324e074950608318f223c73d9d4e2c62a567f6
 - path: /releases/name=python-buildpack/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/python-buildpack-1.5.24-ubuntu-trusty-3445.7-20170831-234333-282404073.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/python-buildpack-1.6.9-ubuntu-trusty-3541.8-20180308-233506-465073335.tgz
 - path: /releases/name=python-buildpack/version
   type: replace
-  value: 1.5.24
+  value: 1.6.9
 - path: /releases/name=python-buildpack/sha1
   type: replace
-  value: 0e9efb1982edcebb4c232dc628dc25f042868597
+  value: 53b4cea30ed0e81b4d6f5ca7d8b42c6cf0f73064
 - path: /releases/name=staticfile-buildpack/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/staticfile-buildpack-1.4.14-ubuntu-trusty-3445.7-20170831-234358-970884336.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/staticfile-buildpack-1.4.22-ubuntu-trusty-3541.8-20180308-233518-701765371.tgz
 - path: /releases/name=staticfile-buildpack/version
   type: replace
-  value: 1.4.14
+  value: 1.4.22
 - path: /releases/name=staticfile-buildpack/sha1
   type: replace
-  value: e9564d4893015969578520f36ba949bc6c3d18c1
+  value: 1345acc578d1eff27aef1ec87e87ad77eea022b6
 - path: /releases/name=dotnet-core-buildpack/url
   type: replace
-  value: https://storage.googleapis.com/cf-deployment-compiled-releases/dotnet-core-buildpack-1.0.24-ubuntu-trusty-3445.7-20170831-234411-669858571.tgz
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/dotnet-core-buildpack-2.0.3-ubuntu-trusty-3541.8-20180308-233519-299565228.tgz
 - path: /releases/name=dotnet-core-buildpack/version
   type: replace
-  value: 1.0.24
+  value: 2.0.3
 - path: /releases/name=dotnet-core-buildpack/sha1
   type: replace
-  value: f38495706129aea0f1cb15532288765aaffe4fbd
+  value: bbce711e58111483c18fb61ce1721fbfc9c01cc3
+- path: /releases/name=cf-syslog-drain/url
+  type: replace
+  value: https://storage.googleapis.com/cf-deployment-compiled-releases/cf-syslog-drain-6.0-ubuntu-trusty-3541.8-20180308-233744-762981307.tgz
+- path: /releases/name=cf-syslog-drain/version
+  type: replace
+  value: "6.0"
+- path: /releases/name=cf-syslog-drain/sha1
+  type: replace
+  value: 16bdc780efe54044ce74c12d377724da5e3cad61
 - path: /releases/name=capi/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=cf-mysql/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=binary-buildpack/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=cf-networking/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=cf-smoke-tests/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
+- path: /releases/name=cf-syslog-drain/stemcell?
+  type: replace
+  value:
+    os: ubuntu-trusty
+    version: "3541.8"
 - path: /releases/name=cflinuxfs2/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=consul/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=diego/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=dotnet-core-buildpack/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
-- path: /releases/name=etcd/stemcell?
-  type: replace
-  value:
-    os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=garden-runc/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=go-buildpack/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=java-buildpack/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=loggregator/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=nats/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=nodejs-buildpack/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=php-buildpack/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=python-buildpack/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=routing/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=ruby-buildpack/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=cf-mysql/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=staticfile-buildpack/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=statsd-injector/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"
 - path: /releases/name=uaa/stemcell?
   type: replace
   value:
     os: ubuntu-trusty
-    version: "3445.7"
+    version: "3541.8"

@@ -19,6 +19,10 @@
         consul_common: {from: consul_common_link}
         consul_server: nil
         consul_client: {from: consul_client_link}
+      properties:
+        consul:
+          agent:
+            node_name_includes_id: true
     - name: cflinuxfs2-rootfs-setup
       release: cflinuxfs2
     - name: garden
@@ -32,33 +36,31 @@
           deny_networks:
           - 0.0.0.0/0
           persistent_image_list:
-          - "/var/vcap/packages/cflinuxfs2/rootfs"
+          - "/var/vcap/packages/cflinuxfs2/rootfs.tar"
     - name: rep
       release: diego
       properties:
         diego:
-          executor:
-            ca_certs_for_downloads: "((blobstore_tls.ca))"
           rep:
             bbs:
-              ca_cert: "((diego_bbs_client.ca))"
+              ca_cert: "((service_cf_internal_ca.certificate))"
               client_cert: "((diego_bbs_client.certificate))"
               client_key: "((diego_bbs_client.private_key))"
             enable_legacy_api_endpoints: false
             preloaded_rootfses:
-            - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
+            - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar
             placement_tags:
             - persistent_isolation_segment
             require_tls: true
-            ca_cert: "((diego_rep_agent.ca))"
-            server_cert: "((diego_rep_agent.certificate))"
-            server_key: "((diego_rep_agent.private_key))"
+            ca_cert: "((service_cf_internal_ca.certificate))"
+            server_cert: "((diego_rep_agent_v2.certificate))"
+            server_key: "((diego_rep_agent_v2.private_key))"
           ssl:
             skip_cert_verify: true
         tls:
-          ca_cert: "((diego_rep_agent.ca))"
-          cert: "((diego_rep_agent.certificate))"
-          key: "((diego_rep_agent.private_key))"
+          ca_cert: "((service_cf_internal_ca.certificate))"
+          cert: "((diego_rep_agent_v2.certificate))"
+          key: "((diego_rep_agent_v2.private_key))"
     - name: route_emitter
       release: diego
       properties:
@@ -66,29 +68,6 @@
           route_emitter:
             local_mode: true
             bbs:
-              ca_cert: "((diego_bbs_client.ca))"
+              ca_cert: "((service_cf_internal_ca.certificate))"
               client_cert: "((diego_bbs_client.certificate))"
               client_key: "((diego_bbs_client.private_key))"
-    - name: metron_agent
-      release: loggregator
-      properties:
-        syslog_daemon_config:
-          enable: false
-        metron_agent:
-          deployment: "((system_domain))"
-          etcd:
-            client_cert: "((etcd_client.certificate))"
-            client_key: "((etcd_client.private_key))"
-        metron_endpoint:
-          shared_secret: "((dropsonde_shared_secret))"
-        loggregator:
-          tls:
-            ca_cert: "((loggregator_tls_metron.ca))"
-            metron:
-              cert: "((loggregator_tls_metron.certificate))"
-              key: "((loggregator_tls_metron.private_key))"
-          etcd:
-            require_ssl: true
-            ca_cert: "((etcd_server.ca))"
-            machines:
-            - cf-etcd.service.cf.internal

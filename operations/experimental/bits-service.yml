@@ -1,81 +1,54 @@
 ---
-# Summary
-# --------
-# TODO
-#
-# Optional properties:
-#
-# - TODO
-
 - type: replace
-  path: /instance_groups/-
+  path: /instance_groups/name=api/jobs/-
   value:
     name: bits-service
-    instances: 1
-    azs: [z1]
-    vm_type: minimal
-    persistent_disk: 6064
-    stemcell: default
-    networks:
-      - name: default
-    jobs:
-      - name: bits-service
-        release: bits-service
-        properties:
-          bits-service:
-            private_endpoint: http://bits-service.service.cf.internal
-            public_endpoint: http://bits-service.((system_domain))
-            secret: "((bits_service_secret))"
-            signing_users:
-              - username: admin
-                password: "((bits_service_signing_password))"
-            app_stash:
-            buildpacks:
-            droplets:
-            packages:
-            cc_updates:
-              ca_cert: "((cc_tls.ca))"
-              client_cert: "((cc_tls.certificate))"
-              client_key: "((cc_tls.private_key))"
-      - name: consul_agent
-        release: consul
-        consumes:
-          consul_common: {from: consul_common_link}
-          consul_server: nil
-          consul_client: {from: consul_client_link}
-        properties:
-          consul:
-            agent:
-              services:
-                bits-service: {}
-      - name: route_registrar
-        release: routing
-        properties:
-          route_registrar:
-            routes:
-              - name: bits-service
-                port: 80
-                registration_interval: 20s
-                uris:
-                  - bits-service.((system_domain))
-                tags:
-                  component: bits-service
+    release: bits-service
+    properties:
+      bits-service:
+        private_endpoint: &private_endpoint https://bits-service.service.cf.internal
+        public_endpoint: &public_endpoint https://bits-service.((system_domain))
+        secret: "((bits_service_secret))"
+        signing_users:
+          - username: admin
+            password: "((bits_service_signing_password))"
+        app_stash:
+        buildpacks:
+        droplets:
+        packages:
+        cc_updates:
+          ca_cert: "((service_cf_internal_ca.certificate))"
+          client_cert: "((cc_tls.certificate))"
+          client_key: "((cc_tls.private_key))"
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=route_registrar/properties/route_registrar/routes/-
+  value:
+    name: bits-service
+    tls_port: 443
+    registration_interval: 20s
+    uris:
+      - bits-service.((system_domain))
+    server_cert_domain_san: *public_endpoint
+    tags:
+      component: bits-service
 
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/bits_service?
   value: &bits-service-config
     enabled: true
-    public_endpoint: http://bits-service.((system_domain))
-    private_endpoint: http://bits-service.service.cf.internal
+    public_endpoint: *public_endpoint
+    private_endpoint: *private_endpoint
     username: admin
     password: "((bits_service_signing_password))"
+    ca_cert: &ca_cert ((service_cf_internal_ca.certificate))
 
 - type: replace
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/bits_service?
   value: *bits-service-config
 
 - type: replace
-  path: /instance_groups/name=cc-clock/jobs/name=cloud_controller_clock/properties/cc/bits_service?
+  path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/bits_service?
   value: *bits-service-config
 
 - type: replace
@@ -91,8 +64,36 @@
     type: password
 
 - type: replace
+  path: /variables/name=bits_service_ssl?
+  value:
+    name: bits_service_ssl
+    type: certificate
+    options:
+      common_name:  bits-service.service.cf.internal
+      alternative_names:
+      - bits-service.service.cf.internal
+      - "((system_domain))"
+      - "*.((system_domain))"
+      ca: service_cf_internal_ca
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=bits-service/properties/bits-service/tls?
+  value:
+    cert: ((bits_service_ssl.certificate))
+    key: ((bits_service_ssl.private_key))
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/backends?/enable_tls
+  value: true
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/ca_certs?
+  value: *ca_cert
+
+- type: replace
   path: /releases/-
   value:
     name: bits-service
-    version: latest
-    # TODO: get a URL
+    version: 1.4.0
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/bits-service-release?v=1.4.0
+    sha1: caa55a888046c2898063fabf0bb19c650ff9a618

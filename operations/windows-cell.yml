@@ -1,4 +1,3 @@
----
 - path: /instance_groups/-
   type: replace
   value:
@@ -15,6 +14,11 @@
         consul_server: nil
       name: consul_agent_windows
       properties:
+        consul:
+          agent:
+            dns_config:
+              service_ttl: 10s
+            node_name_includes_id: true
         syslog_daemon_config:
           enable: false
       release: consul
@@ -25,42 +29,47 @@
       release: garden-windows
     - name: rep_windows
       properties:
+        containers:
+          trusted_ca_certificates:
+          - ((application_ca.certificate))
         diego:
           executor:
-            ca_certs_for_downloads: ((blobstore_tls.ca))
+            ca_certs_for_downloads: ((service_cf_internal_ca.certificate))
+            instance_identity_ca_cert: ((diego_instance_identity_ca.certificate))
+            instance_identity_key: ((diego_instance_identity_ca.private_key))
           rep:
-            bbs:
-              ca_cert: ((diego_bbs_client.ca))
-              client_cert: ((diego_bbs_client.certificate))
-              client_key: ((diego_bbs_client.private_key))
-            ca_cert: ((diego_rep_agent.ca))
             enable_legacy_api_endpoints: false
+            locket:
+              api_location: locket.service.cf.internal:8891
             preloaded_rootfses:
             - windows2012R2:/tmp/windows2012R2
             require_tls: true
-            server_cert: ((diego_rep_agent.certificate))
-            server_key: ((diego_rep_agent.private_key))
         loggregator:
-          ca_cert: ((loggregator_tls_metron.ca))
+          ca_cert: ((loggregator_ca.certificate))
           cert: ((loggregator_tls_metron.certificate))
           key: ((loggregator_tls_metron.private_key))
           use_v2_api: true
         syslog_daemon_config:
           enable: false
         tls:
-          ca_cert: ((diego_rep_agent.ca))
-          cert: ((diego_rep_agent.certificate))
-          key: ((diego_rep_agent.private_key))
+          ca_cert: ((service_cf_internal_ca.certificate))
+          cert: ((diego_rep_agent_v2.certificate))
+          key: ((diego_rep_agent_v2.private_key))
       release: diego
     - name: route_emitter_windows
       properties:
         diego:
           route_emitter:
             bbs:
-              ca_cert: ((diego_bbs_client.ca))
+              ca_cert: ((service_cf_internal_ca.certificate))
               client_cert: ((diego_bbs_client.certificate))
               client_key: ((diego_bbs_client.private_key))
             local_mode: true
+        loggregator:
+          ca_cert: ((loggregator_ca.certificate))
+          cert: ((loggregator_tls_metron.certificate))
+          key: ((loggregator_tls_metron.private_key))
+          use_v2_api: true
         tcp:
           enabled: true
         uaa:
@@ -70,30 +79,22 @@
     - name: metron_agent_windows
       properties:
         loggregator:
-          etcd:
-            ca_cert: ((etcd_server.ca))
-            machines:
-            - cf-etcd.service.cf.internal
-            require_ssl: true
           tls:
-            ca_cert: ((loggregator_tls_metron.ca))
+            ca_cert: ((loggregator_ca.certificate))
             metron:
               cert: ((loggregator_tls_metron.certificate))
               key: ((loggregator_tls_metron.private_key))
         metron_agent:
           deployment: ((system_domain))
-          etcd:
-            client_cert: ((etcd_client.certificate))
-            client_key: ((etcd_client.private_key))
-        metron_endpoint:
-          shared_secret: ((dropsonde_shared_secret))
         syslog_daemon_config:
           enable: false
       release: loggregator
+    - name: enable_ssh
+      release: windows-utilities
     name: windows-cell
     networks:
     - name: default
-    stemcell: windows
+    stemcell: windows2012R2
     vm_extensions:
     - 100GB_ephemeral_disk
     vm_type: small-highmem
@@ -101,21 +102,26 @@
   type: replace
   value:
     name: garden-windows
-    sha1: 395fae118c5f9b404eb6c497d1f9a8607ccf5504
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/garden-windows-bosh-release?v=0.8.0
-    version: 0.8.0
+    sha1: 169c77ad4f9cc431dfb00a9657245e59c2d590b1
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/garden-windows-bosh-release?v=0.13.0
+    version: 0.13.0
+- path: /releases/name=windows-utilities?
+  type: replace
+  value:
+    name: windows-utilities
+    sha1: 4cb16591fb2dce238df87962873f5224f5fe5c8a
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.6.0
+    version: 0.6.0
 - path: /stemcells/-
   type: replace
   value:
-    alias: windows
+    alias: windows2012R2
     os: windows2012R2
-    version: "1200.3"
-- path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/stacks?
+    version: "1200.15"
+- path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/stacks/name=windows2012R2?
   type: replace
   value:
-  - description: Cloud Foundry Linux-based filesystem
-    name: cflinuxfs2
-  - description: Windows Server 2012 R2
+    description: Windows Server 2012 R2
     name: windows2012R2
 - path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/-
   type: replace
@@ -127,10 +133,20 @@
   value:
     name: hwc-buildpack
     release: hwc-buildpack
-- path: /releases/-
+- path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/name=hwc_buildpack?
+  type: replace
+  value:
+    name: hwc_buildpack
+    package: hwc-buildpack
+- path: /instance_groups/name=api/jobs/name=hwc-buildpack?
   type: replace
   value:
     name: hwc-buildpack
-    sha1: b93f85650469b506d17457e7b5630b860e4f3ef8
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/hwc-buildpack-release?v=2.3.8
-    version: 2.3.8
+    release: hwc-buildpack
+- path: /releases/name=hwc-buildpack?
+  type: replace
+  value:
+    name: hwc-buildpack
+    sha1: 17c4d18bc5bbb49a0b0476b6aa41524b4285a0bc
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/hwc-buildpack-release?v=2.3.14
+    version: 2.3.14

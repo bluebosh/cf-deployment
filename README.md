@@ -1,12 +1,9 @@
 # cf-deployment
 
-**This repo is still a work in progress for certain use cases.
-Take a look at <a href='#readiness'>this table</a>
-to see if it's recommended that you use it.**
-
 ### Table of Contents
 * <a href='#purpose'>Purpose</a>
-* <a href='#readiness'>Is `cf-deployment` ready to use?</a>
+* <a href='#migrating'>Migrating from cf-release to cf-deployment</a>
+* <a href='#tls'>TLS validation</a>
 * <a href='#deploying-cf'>Deploying CF</a>
 * <a href='#contributing'>Contributing</a>
 * <a href='#setup'>Setup and Prerequisites</a>
@@ -14,11 +11,11 @@ to see if it's recommended that you use it.**
 * <a href='#ci'>CI</a>
 
 ## <a name='purpose'></a>Purpose
-This repo contains a canonical manifest
-for deploying Cloud Foundry without the use of `cf-release`,
+This repo contains a canonical [BOSH](http://bosh.io/docs) deployment manifest
+for deploying the CF Application Runtime without the use of `cf-release`,
 relying instead on individual component releases.
-It will replace the [manifest generation scripts in cf-release][cf-release-url]
-when `cf-release` is deprecated.
+It replaces the [manifest generation scripts in cf-release][cf-release-url]
+which have finally been deprecated.
 It uses several newer features
 of the BOSH director and CLI.
 Older directors may need to be upgraded
@@ -26,7 +23,7 @@ and have their configurations extended
 in order to support `cf-deployment`.
 
 `cf-deployment` embodies several opinions
-about Cloud Foundry deployment.
+about the CF Application Runtime.
 It:
 - prioritizes readability and meaning to a human operator.
   For instance, only necessary configuration is included.
@@ -38,144 +35,55 @@ It:
 - uses three AZs, of which two are used to provide redundancy for most instance groups.
 The third is used only for instance groups
 that should not have even instance counts,
-such as etcd and consul.
-- uses Diego natively,
-does not support DEAs,
+such as consul.
+- uses [Diego](http://docs.cloudfoundry.org/concepts/diego/diego-architecture.html) ([source code](https://github.com/cloudfoundry/diego-release)) natively,
+does not support the deprecated [DEAs](https://docs.cloudfoundry.org/concepts/architecture/execution-agent.html),
 and enables diego-specific features
 such as ssh access to apps by default.
 - deploys jobs to handle platform data persistence
-using the cf-mysql release for databases
-and the CAPI release's WebDAV job for blob storage.
+using singleton versions of the cf-mysql release for databases
+and the CAPI release's singleton WebDAV job for blob storage.
+See the  [database](deployment-guide.md#databases) and [blobstore](deployment-guide.md#blobstore) sections
+of the deployment guide
+for more resilient options.
 - assumes load-balancing will be handled by the IaaS
 or an external deployment.
-- assumes GCP as the default deployment environment.
-For use with other IaaSs, see the **Ops Files** section below.
 
-### <a name='readiness'></a> Is `cf-deployment` ready to use?
-
-| Use Case | Is cf-deployment ready? | Blocked On |
-| -------- | ----------------------- | ---------- |
-| Test and development | Yes | |
-| New production deployments | No | Downtime testing |
-| Existing production deployments using cf-release | No | Migration tools |
-
-We've been testing cf-deployment for some time,
-and many of the development teams in the Cloud Foundry organization
-are using it for development and testing.
-If that describes your use case,
-you can use cf-deployment as your manifest.
-
-If you're hoping to use cf-deployment for a new _production_ deployment,
-we still wouldn't suggest using cf-deployment.
-We still need to be able to make some guarantees
-about app availability during rolling deploys.
-When we think cf-deployment is ready,
-we'll update this section and make announcements on the cf-dev mailing list.
-
-### Can I Transition from `cf-release`?
-A migration will be possible.
-It will be easier for some configurations
-than others.
-
+## <a name='migrating'></a>Can I Transition from `cf-release`?
 The Release Integration team
-is working on a transition path from `cf-release`.
-We don't advise anybody attempt the migration yet.
-Our in-progress tooling and documentation can be found at
-https://github.com/cloudfoundry/cf-deployment-transition
+supports a transition path from `cf-release`.
+You can find tooling and documentation for performing the migration
+in our [cf-deployment-transition repo](https://github.com/cloudfoundry/cf-deployment-transition).
+
+## <a name='tls'></a> TLS validation
+
+Many test, development, and "getting started" environments
+do not have valid `TLS` certificates
+installed in their load balancers.
+`cf-deployment` skips `TLS` validation
+on some components
+that access each other via the "front door"
+of the Cloud Foundry load balancer
+for ease of use
+in such environments.
+This is a temporary solution
+that will be addressed soon
+by the [BOSH Trusted Certificates](https://bosh.io/docs/trusted-certs.html) workflow.
+
+Production deployers who have valid
+or otherwise trusted
+load balancer certificates should use the
+[stop-skipping-tls-validation.yml](operations/stop-skipping-tls-validation.yml) opsfile
+to force the validation of `TLS` certificates
+for all components.
 
 ## <a name='deploying-cf'></a>Deploying CF
+Deployment instructions have become verbose,
+so we've moved them into a [dedicated deployment guide here](deployment-guide.md).
 
-### Step 1: Pave your IaaS and get a BOSH Director
-
-Before you can start deploying,
-you'll need to make sure you've configured your infrastructure appropriately
-and deployed a BOSH Director.
-If you're using AWS or GCP,
-we'd suggest using [bbl](https://github.com/cloudfoundry/bosh-bootloader)
-to set up your IaaS resources and bootstrap a BOSH director.
-(For a full guide to getting set up on GCP, look at [this guide](gcp-deployment-guide.md).)
-Otherwise, take a look at [the BOSH documentation](https://bosh.io/docs/init.html)
-for information about prerequisites for a given IaaS
-and installing a BOSH Director there.
-
-Lastly, if you're planning to use a local bosh-lite for your BOSH director,
-follow [these instructions](https://bosh.io/docs/bosh-lite.html).
-
-##### bosh-lite
-If you're deploying bosh-lite to a VM on AWS or GCP,
-look at [this guide](bosh-lite.md).
-
-If you're deploying against a local bosh-lite,
-you'll need to take the following steps before deploying:
-```
-export BOSH_CA_CERT=<PATH-TO-BOSH-LITE-REPO>/ca/certs/ca.crt
-bosh -e 192.168.50.6 update-cloud-config bosh-lite/cloud-config.yml
-```
-
-#### Get load balancers
-The CF Routers need a way to receive traffic.
-The most common way to accomplish this is to configure load balancers
-to route traffic to them.
-While we cannot offer help for each IaaS specifically,
-for IaaSes like AWS and GCP,
-you can use `bbl` to create load balancers
-by running `bbl create-lbs`.
-
-
-### Step 2: Target your BOSH Director
-There are several ways to target your new BOSH director.
-One of the simplest ways is to create an environment alias:
-```
-bosh -e <DIRECTOR_IP> alias-env my-env --ca-cert DIRECTOR_CA_CERT_FILE
-
-bosh -e my-env login
-# Provide username and password for your BOSH Director
-```
-
-Alternatively, you can set environment variables:
-```
-export BOSH_ENVIRONMENT=<DIRECTOR_IP>
-export BOSH_CLIENT=<DIRECTOR_USERNAME>
-export BOSH_CLIENT_SECRET=<DIRECTOR_PASSWORD>
-export BOSH_CA_CERT=<DIRECTOR_CA_CERT_TEXT>
-```
-
-If you've used `bbl` to set up your director,
-you can fetch the director location and credentials with the following commands:
-
-```
-export BOSH_ENVIRONMENT=$(bbl director-address)
-export BOSH_CLIENT=$(bbl director-username)
-export BOSH_CLIENT_SECRET=$(bbl director-password)
-export BOSH_CA_CERT="$(bbl director-ca-cert)"
-```
-
-### Step 3: Deploy CF
-To deploy to a configured BOSH director using the new `bosh` CLI:
-
-```
-export SYSTEM_DOMAIN=some-domain.that.you.have
-bosh -e my-env -d cf deploy cf-deployment/cf-deployment.yml \
-  --vars-store env-repo/deployment-vars.yml \
-  -v system_domain=$SYSTEM_DOMAIN \
-  [ -o operations/CUSTOMIZATION1 ] \
-  [ -o operations/CUSTOMIZATION2 (etc.) ]
-```
-
-The CF Admin credentials will be stored in the file passed to the `--vars-store` flag
-(`env-repo/deployment.yml` in the example).
-You can find them by searching for `cf_admin_password`.
-
-If you're using a local bosh-lite,
-remember to add the `operations/bosh-lite.yml` ops-file
-to your deploy command:
-  ```
-
-  bosh -e 192.168.50.6 -d cf deploy cf-deployment.yml \
-    -o operations/bosh-lite.yml \
-    --vars-store deployment-vars.yml \
-    -v system_domain=bosh-lite.com
-  ```
+There's a small section in that doc
+that tries to help operators reason about choices they can make in their deployments.
+Take a look at [Notes for operators](deployment-guide.md#notes-for-operators).
 
 See the rest of this document for more on the new CLI, deployment vars, and configuring your BOSH director.
 
@@ -187,10 +95,25 @@ Please also take a look at the ["style guide"](texts/style-guide.md),
 which lays out some guidelines for adding properties or jobs
 to the deployment manifest.
 
-Before submitting a pull request,
-please run `scripts/test`
+Before submitting a pull request
+or pushing to develop,
+please run `./scripts/test`
 which interpolates all of our ops files
 with the `bosh` cli.
+
+By default, the test suite omits `semantic` tests,
+which require both [jq](https://stedolan.github.io/jq/)
+and [yq](https://github.com/mikefarah/yq) installed.
+If you wish to run them,
+please install these requirements and
+set `RUN_SEMANTIC=true` in your environment.
+
+**Note:** it is necessary to run the tests
+from the root of the repo.
+
+If you add an Ops-file,
+you will need to document it in its corresponding README
+and add it to the ops file tests in `scripts/test`.
 
 We ask that pull requests and other changes be successfully deployed,
 and tested with the latest sha of CATs.
@@ -201,6 +124,9 @@ and requires a bosh director with a valid cloud-config that has been configured 
 It also requires the new `bosh` CLI,
 which it relies on to generate and fill-in needed variables.
 
+### BOSH director
+`cf-deployment` requires BOSH [`v262`](https://github.com/cloudfoundry/bosh/releases/tag/v262).
+
 ### BOSH CLI
 `cf-deployment` requires the new [BOSH CLI](https://github.com/cloudfoundry/bosh-cli).
 
@@ -208,10 +134,11 @@ which it relies on to generate and fill-in needed variables.
 `cf-deployment` assumes that
 you've uploaded a compatible [cloud-config](http://bosh.io/docs/cloud-config.html) to the BOSH director.
 The cloud-config produced by `bbl` is compatible by default,
-which covers GCP and AWS.
-For bosh-lite, you can use the cloud-config in the `bosh-lite` directory of this repo.
-We have not yet tested cf-deployment against other IaaSes,
-so you may need to do some engineering work to figure out the right cloud config (and possibly ops files)
+which covers GCP, AWS, and Azure.
+The `iaas-support` directory includes tools and templates for building cloud-configs for other IaaSes,
+including bosh-lite, vSphere, Openstack, and Alibaba Cloud.
+For other IaaSes,
+you may need to do some engineering work to figure out the right cloud config (and possibly ops files)
 to get it working for `cf-deployment`.
 
 ### Deployment variables and the var-store
@@ -262,121 +189,26 @@ we accomplish this with the `-o`/`--ops-file` flags.
 These flags read a single `.yml` file that details operations to be performed on the manifest
 before variables are generated and filled.
 We've supplied some common manifest modifications in the `operations` directory.
+More details can be found in the [Ops-file README](operations/README.md).
 
-Here's an (alphabetical) summary:
-- `operations/legacy/old-droplet-mitigation.yml
-  this file mitigates against old droplets
-  that may still have a legacy security vulnerability.
-  See comment in the ops file for more details.
-- `operations/aws.yml` and `operations/change-logging-port-for-aws-elb.yml` -
-  this file overrides the vm_extensions for load balancers and overrides the loggregator ports to 4443,
-  since it is required under AWS to have a separate port from the standard HTTPS port (443) for loggregator traffic
-  in order to use the AWS load balancer.
-- `operations/disable-router-tls-termination.yml` -
-  this file eliminates keys related to performing tls/ssl termination within the gorouter job.
-  It's useful for deployments where tls termination is performed prior to the gorouter -
-  for instance, on AWS, such termination is commonly done at the ELB.
-  This also eliminates the need to specify `((router_ssl.certificate))` and `((router_ssl.private_key))` in the var files.
-- `operations/configure-default-router-group.yml` -
-  this file allows deployer to configure reservable ports for default tcp
-  router group by passing variable `default_router_group_reservable_ports`.
-- `operations/enable-privileged-container-support.yml` -
-  enables diego privileged container support on cc-bridge.
-  This opsfile might not be compatible with opsfiles
-  that inline bridge functionality to cloud-controller.
-- `operations/gcp.yml` -
-  this file was intentionally left blank and left for backwards compatibility. It previously overrode the static IP addresses assigned to some instance groups,
-  as GCP networking features allow them to all co-exist on the same subnet
-  despite being spread across multiple AZs.
-- `operations/rename-deployment.yml` -
-  This file allows a deployer to rename the deployment
-  by passing a variable `deployment_name`
-- `operations/rename-network.yml` -
-  This file allows a deployer to rename the network
-  by passing a variable `network_name`
-- `operations/scale-to-one-az.yml` -
-  Scales cf-deployment down to a single instance per instance group,
-  placing them all into a single AZ.
-  Effectively halves the deployment's footprint.
-  Should be applied before other ops files.
-- `operations/test/add-datadog-firehose-nozzle-aws.yml` -
-  Deploys a datadog-firehose-nozzle that collects system metric and posts to datadog.
-  For AWS only.
-- `operations/tcp-routing-gcp.yml` -
-  this ops file adds TCP routers for GCP.
-- `operations/use-blobstore-cdn.yml` -
-  adds support for accessing the `droplets` and `resource_pool` blobstore
-  resources via signed urls over a cdn.  Note that this ops file assumes that you
-  are using the same keypair for both buckets.  Introduces new variables:
-  ```
-  cdn_key_pair_id
-  cdn_private_key
-  resource_pool_cdn_uri
-  droplets_cdn_uri
-  ```
-- `operations/use-external-dbs.yml` -
-  removes the MySQL instance group,
-  cf-mysql release, and all cf-mysql variables.
-  This requires an external data store.
-  Introduces new variables for DB connection
-  details which will need to be provided at deploy time.
-  The new variables are all strings
-  (except db_port, which is an integer).
-  Their names are:
-  ```
-  db_scheme
-  db_port
-  cc_db_name
-  cc_db_address
-  cc_db_username
-  cc_db_password
-  uaa_db_name
-  uaa_db_address
-  uaa_db_username
-  uaa_db_password
-  bbs_db_name
-  bbs_db_address
-  bbs_db_username
-  bbs_db_password
-  routing_api_db_name
-  routing_api_db_address
-  routing_api_db_username
-  routing_api_db_password
-  ```
-  This must be applied _before_
-  any ops files that removes jobs that use a database,
-  such as the ops file to remove the routing API.
-  **Warning**: this does not migrate data,
-  and will delete existing database instance groups.
-- `operations/use-postgres.yml` -
-  replaces the MySQL instance group
-  with a postgres instance group.
-  **Warning**: this will lead to total data loss
-  if applied to an existing deployment with MySQL
-  or removed from an existing deployment with postgres.
-- `use-s3-blobstore.yml` -
-  replaces local WebDAV blobstore with external
-  s3 blobstore. Introduces new variables for
-  AWS credentials and bucket names,
-  which will need to be provided at deploy time.
-  The new variables are all strings.
-  Their names are:
-  ```
-  aws_region
-  blobstore_access_key_id
-  blobstore_secret_access_key
-  app_package_directory_key
-  buildpack_directory_key
-  droplet_directory_key
-  resource_directory_key
-  ```
-- `operations/windows-cell.yml` -
-  deploys a windows diego cell,
-  adds releases necessary for windows.
+### A note on `community`, `experimental`, and `test` ops-files
+The `operations` directory includes subdirectories
+for "community", "experimental", and "test" ops-files.
 
-### A note on `experimental` and `test` ops-files
-The `operations` directory includes two subdirectories
-for "experimental" and "test" ops-files.
+#### Addons
+These ops-files make changes to
+most or all instance groups.
+They can be applied to the BOSH Director's
+runtime config,
+or directly to an individual deployment manifest.
+
+The ops-file to configure platform component logging
+with rsyslog is such an add-on.
+Please see the [Addon Ops-file README](operations/addons/README.md)
+for details.
+
+#### Community
+"Community" ops-files are contributed by the Cloud Foundry community. They are not maintained or supported by the Release Integration team. For details, see the [Community Ops-file README](operations/community/README.md)
 
 #### Experimental
 "Experimental" ops-files represent configurations
@@ -385,6 +217,7 @@ meaning that,
 once the configurations have been sufficiently validated,
 they will become part of cf-deployment.yml
 and the ops-files will be removed.
+For details, see the [Experimental Ops-file README](operations/experimental/README.md).
 
 #### Test
 "Test" ops-files are configurations
@@ -403,22 +236,18 @@ For example,
 but the ops-file is hard to apply repeatably.
 In this case, the ops-file is an example.
 
-Others,
-like `cfr-to-cfd-transition.yml`,
-will eventually be promoted to the `operations` directory,
-but are still being modified regularly.
-In this case, the ops-file is included for public visibility.
-
 ## <a name='ci'></a>CI
 The [ci](https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-deployment) for `cf-deployment`
 automatically bumps to the latest versions of its component releases on the `develop` branch.
 These bumps, along with any other changes made to `develop`, are deployed to a single long-running environment
 and tested with CATs before being merged to master if CATs goes green.
-There is not presently any versioning scheme,
-or way to correlate which version of CATs is associated with which sha of cf-deployment,
-other than the history in CI.
-As `cf-deployment` matures, we'll address versioning.
-The configuration for our pipeline can be found [here](https://github.com/cloudfoundry/runtime-ci/pipelines/cf-deployment.yml).
+
+Each version of cf-deployment is given a corresponding branch in the CATs repo,
+so that users can discover which version of CATs to run against their deployments.
+For example, if you've deployed cf-deployment v0.35.0,
+check out the `cf0.35` branch in cf-acceptance-tests to run CATs.
+
+The configuration for our pipeline can be found [here](https://github.com/cloudfoundry/runtime-ci/blob/master/pipelines/cf-deployment.yml).
 
 [cf-deployment-concourse-url]: https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-deployment
 [cf-release-url]: https://github.com/cloudfoundry/cf-release/tree/master/templates
