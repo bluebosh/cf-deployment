@@ -2,9 +2,9 @@
   path: /releases/-
   value:
     name: postgres
-    sha1: a436047dae4d4156a1debe9f88bedf59bf40362b
-    url: https://bosh.io/d/github.com/cloudfoundry/postgres-release?v=26
-    version: "26"
+    sha1: c1fcec62cb9d2e95e3b191e3c91d238e2b9d23fa
+    url: https://bosh.io/d/github.com/cloudfoundry/postgres-release?v=28
+    version: "28"
 - type: remove
   path: /instance_groups/name=database/jobs/name=mysql
 - type: remove

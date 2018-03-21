@@ -123,6 +123,12 @@
     persistent_disk_type: 5GB
     stemcell: default
     vm_type: minimal
+
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=log-cache-scheduler?
+  value:
+    name: log-cache-scheduler
+    release: log-cache
 - type: replace
   path: /variables/-
   value:
